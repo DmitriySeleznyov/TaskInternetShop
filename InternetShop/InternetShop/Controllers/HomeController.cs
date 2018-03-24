@@ -1,4 +1,6 @@
-﻿using System;
+﻿using InternetShop.Contracts.DataContracts;
+using InternetShop.DAL.DataBase;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,6 +12,11 @@ namespace InternetShop.Controllers
     {
         public ActionResult Index()
         {
+            using (var context = new InternetShopContext())
+            {
+                context.Users.Add(new User() { Password = "123", ConfirmPassword = "123", Surname = "Vasiy", Name = "Petya" });
+                var a = context.Users;
+            }
             return View();
         }
 
