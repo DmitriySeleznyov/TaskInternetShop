@@ -18,24 +18,12 @@ namespace InternetShop.Contracts.DataContracts
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Count is required")]
+        [Range(0, 999)]
         public int Count { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
-        [Range(1, 999999, ErrorMessage = "Price not correct")]
+        [Range(0, double.MaxValue, ErrorMessage = "Please enter valid doubleNumber")]
         public double Price { get; set; }
-
-        [Required(ErrorMessage = "Guarantee is required")]
-        [Range(1, 120, ErrorMessage = "Guarantee not correct")]
-        public int Guarantee { get; set; }
-
-        [Required(ErrorMessage = "Manufacturer is required")]
-        public string Manufacturer { get; set; }
-
-        [Required(ErrorMessage = "Model is required")]
-        public string Model { get; set; }
-
-        [Required(ErrorMessage = "ManufacturerCountry is required")]
-        public string ManufacturerCountry { get; set; }
 
         //связи
         public Basket Baskets { get; set; }

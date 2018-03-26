@@ -11,101 +11,105 @@ using InternetShop.DAL.DataBase;
 
 namespace InternetShop.Controllers
 {
-    public class ProductsController : Controller
+    public class UsersController : Controller
     {
         private InternetShopContext db = new InternetShopContext();
 
-        // GET: Products
+        // GET: Users
         public ActionResult Index()
         {
-            
-            return View(db.Products.ToList());
+            return View(db.Users.ToList());
         }
 
-        // GET: Products/Details/5
+        // GET: Users/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
-            if (product == null)
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(user);
         }
 
-        // GET: Products/Create
-        public ActionResult Add()
+        // GET: Users/Create
+        public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Products/Create
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. 
+        // POST: Users/Create
+        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Add(Product product)
+        public ActionResult Create([Bind(Include = "IDUser,Password,ConfirmPassword,Surname,Name,Patronymic,BirthDay,Mail,Phone,Address")] User user)
         {
-           
-                db.Products.Add(product);
+            if (ModelState.IsValid)
+            {
+                db.Users.Add(user);
                 db.SaveChanges();
-
-            
                 return RedirectToAction("Index");
-           
+            }
+
+            return View(user);
         }
 
-        // GET: Products/Edit/5
+        // GET: Users/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
-            if (product == null)
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(user);
         }
 
-        // POST: Products/Edit/5
+        // POST: Users/Edit/5
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Product product)
+        public ActionResult Edit([Bind(Include = "IDUser,Password,ConfirmPassword,Surname,Name,Patronymic,BirthDay,Mail,Phone,Address")] User user)
         {
-                db.Entry(product).State = EntityState.Modified;
+            if (ModelState.IsValid)
+            {
+                db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
+            }
+            return View(user);
         }
 
-        // GET: Products/Delete/5
+        // GET: Users/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
-            if (product == null)
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(user);
         }
 
-        // POST: Products/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Product product = db.Products.Find(id);
-            db.Products.Remove(product);
+            User user = db.Users.Find(id);
+            db.Users.Remove(user);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -117,13 +121,6 @@ namespace InternetShop.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        public ActionResult Buy(int id, int count)
-        {
-            db.Baskets.Add(new Basket {Count = count, Products = db.Products.Where(x=>x.IDProduct == id ).ToList() ,Date = DateTime.Now , Users= db.Users.Where(x => x.IDUser == 1).ToList()});
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
     }
 }

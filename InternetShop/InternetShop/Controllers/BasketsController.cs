@@ -44,7 +44,6 @@ namespace InternetShop.Controllers
 
         // POST: Baskets/Create
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Add(Basket basket)
@@ -77,7 +76,6 @@ namespace InternetShop.Controllers
 
         // POST: Baskets/Edit/5
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Basket basket)
@@ -125,6 +123,29 @@ namespace InternetShop.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult Ordering(int IDUser)
+        {
+            IDUser = 1;
+            for (int i = 0; i < db.Baskets.Where(x=>x.Users==db.Users.Where(t=>t.IDUser==IDUser)).Count(); i++)
+            {
+
+                db.Orders.Add(new Order { Count = ((db.Baskets.First(x => x.Users == db.Users.Where(t => t.IDUser == IDUser))).Count),
+                    Products = ((db.Baskets.First(x => x.Users == db.Users.Where(t => t.IDUser == IDUser))).Products),
+                    Status = "Готовится к выполнению",
+                    Date = DateTime.Now ,
+                    Users = db.Users.Where(x=>x.IDUser==IDUser).ToList(),
+                    Address = db.Users.First(x=>x.IDUser==IDUser).Address
+                });
+                db.Baskets.Remove(db.Baskets.First(x=>x.Users == db.Users.Where(t=>t.IDUser==IDUser)));
+
+            }
+
+
+
+            
+            return RedirectToAction("Index");
         }
     }
 }
